@@ -44,7 +44,7 @@
     //    [self creat_group_enter_GCD];
     
     //7、信号量
-    //    [self creat_semaphore_GCD];
+//        [self creat_semaphore_GCD];
     
     //8、使用信号量模拟买车票
     [self buyTicket];
@@ -237,7 +237,7 @@
 /// 信号量
 -(void)creat_semaphore_GCD{
     //创建信号量 当信号量大于等于0的时候会执行代码，小于0等待 里面的值也代表最多开几个线程,因为小于0才会等待，所以为0的时候相当于开一个线程
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
     //    //使信号量+1
     //    dispatch_semaphore_signal(semaphore);
     //    //使信号量-1
@@ -278,14 +278,14 @@
     //车票总数
     self.ticketSurplusCount = 50;
     //窗口数
-    int windows = 1;
+    int windows = 3;
     
     self.semaphore = dispatch_semaphore_create(windows);
     
     dispatch_queue_t queue1 = dispatch_queue_create("net.bujige.testQueue1", DISPATCH_QUEUE_SERIAL);
     dispatch_queue_t queue2 = dispatch_queue_create("net.bujige.testQueue2", DISPATCH_QUEUE_SERIAL);
-//    dispatch_queue_t queue3 = dispatch_queue_create("net.bujige.testQueue3", DISPATCH_QUEUE_SERIAL);
-//    dispatch_queue_t queue4 = dispatch_queue_create("net.bujige.testQueue4", DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t queue3 = dispatch_queue_create("net.bujige.testQueue3", DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t queue4 = dispatch_queue_create("net.bujige.testQueue4", DISPATCH_QUEUE_SERIAL);
 
     __weak typeof(self) weakself = self;
     dispatch_async(queue1, ^{
@@ -294,12 +294,12 @@
     dispatch_async(queue2, ^{
         [weakself creatSysDrawer:1];
     });
-//    dispatch_async(queue3, ^{
-//        [weakself creatSysDrawer:2];
-//    });
-//    dispatch_async(queue4, ^{
-//        [weakself creatSysDrawer:3];
-//    });
+    dispatch_async(queue3, ^{
+        [weakself creatSysDrawer:2];
+    });
+    dispatch_async(queue4, ^{
+        [weakself creatSysDrawer:3];
+    });
 
     
 }
@@ -308,17 +308,17 @@
 -(void)creatSysDrawer:(int)nowint{
     
     while (1) {
+        dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
         if (self.ticketSurplusCount > 0) {
-            dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
             self.ticketSurplusCount--;
             NSLog(@"%d窗口还剩%d张票",nowint,self.ticketSurplusCount);
-            [NSThread sleepForTimeInterval:0.2];
+            dispatch_semaphore_signal(self.semaphore);
         }else{
             NSLog(@"票卖完了");
             dispatch_semaphore_signal(self.semaphore);
             break;
         }
-        dispatch_semaphore_signal(self.semaphore);
+        
     }
 }
 
