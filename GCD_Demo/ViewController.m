@@ -23,16 +23,16 @@
     [super viewDidLoad];
     
     //1、异步+串行
-    //    [self creat_async_SERIAL_GCD];
+//        [self creat_async_SERIAL_GCD];
     
     //2、异步+并行
-    //    [self creat_async_CONCURRENT_GCD];
+//        [self creat_async_CONCURRENT_GCD];
     
     //3、同步+串行
-    //    [self creat_sync_SERIAL_GCD];
+//        [self creat_sync_SERIAL_GCD];
     
     //4、同步+并行
-    //    [self creat_sync_CONCURRENT_GCD];
+//        [self creat_sync_CONCURRENT_GCD];
     /**
      结论：除了异步+并行以外，其他三种执行的顺序都是一样的，区别在于异步可以创建新线程，同步不能创建新线程
      */
@@ -47,7 +47,21 @@
 //        [self creat_semaphore_GCD];
     
     //8、使用信号量模拟买车票
-    [self buyTicket];
+//    [self buyTicket];
+    
+//    //线程通信
+//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+//
+//    dispatch_async(queue, ^{
+//        //执行耗时任务
+//
+//        //任务执行完成后回到主线程操作
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            //主线程操作
+//        });
+//    });
+    
+   
     
 }
 
